@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from flask import Flask, jsonify, request
@@ -5,15 +6,23 @@ from flask_sqlalchemy import SQLAlchemy
 import firebase_admin
 from firebase_admin import credentials, auth
 from sqlalchemy.orm import DeclarativeBase
-
+from datetime import datetime
 from models.item import Item
 from models.models import db
+import uuid
+
+
+
+
 
 app = Flask(__name__)
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///myfridge.db"
 # initialize the app with the extension
 db.init_app(app)
+# Create the database tables
+with app.app_context():
+    db.create_all()
 
 # Initialize Firebase Admin SDK
 key_path = os.environ.get("FIREBASE_ADMIN_SDK_KEY_PATH")
@@ -39,20 +48,22 @@ def hello_world():  # put application's code here
     json_data = jsonify(a.to_dict())
     return json_data
 
-@app.route('/items', methods=['GET'])
+@app.route('/items/get', methods=['GET'])
 def get_items():
     # Verify Firebase token
-    decoded_token, error_response = verify_firebase_token()
-    if error_response:
-        return error_response
-    items = [
-        Item('item1', 'description1', 10, 1234567890),
-        Item('item2', 'description2', 20, 1234567890)
-    ]
+    # decoded_token, error_response = verify_firebase_token()
+    # if error_response:
+    #     return error_response
+
+    # Get the user ID from the token
+    # user_id = decoded_token['uid']
+    user_id = "123"  # Placeholder for user ID
+    # Query the database for items belonging to the user
+    items = Item.query.filter_by(user_id=user_id).all()
     return jsonify([item.to_dict() for item in items])
 
 # Accept an item in JSON format
-@app.route('/items', methods=['POST'])
+@app.route('/items/add', methods=['POST'])
 def add_item():
     data = request.get_json()
 
@@ -60,24 +71,31 @@ def add_item():
         return jsonify({"message": "No input data provided"}), 400
 
     # Verify Firebase token
-    decoded_token, error_response = verify_firebase_token()
-    if error_response:
-        return error_response
+    # decoded_token, error_response = verify_firebase_token()
+    # if error_response:
+    #     return error_response
+
+    expiration: datetime = datetime(1970, 1, 1)
+    try:
+        expiration = datetime.strptime(data.get('expiration_date'), '%Y-%m-%dT%H:%M:%S')
+    except ValueError:
+        return jsonify({"message": "Invalid date format"}), 400
 
     # Create a new item
     item = Item(
         name=data.get('name'),
         description=data.get('description'),
         quantity=data.get('quantity'),
-        expiration_date=data.get('expiration_date'),
+        expiration_date=expiration,
         position=data.get('position'),
-        user_id=decoded_token['uid']  # Assuming user ID is in the token
+        user_id="123",  # Placeholder for user ID
+       #user_id=decoded_token['uid']  # Assuming user ID is in the token
     )
     db.session.add(item)
     db.session.commit()
     # Return the created item
 
-    return jsonify(item.to_dict()), 201
+    return "Item Created", 201
 
 
 if __name__ == '__main__':
