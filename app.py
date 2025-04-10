@@ -31,7 +31,7 @@ def verify_firebase_token():
         return None, jsonify({"message": "Invalid token", "error": str(e)}), 401
 
 @app.route('/')
-def hello_world():  # put application's code here
+def hello_world():
     a = Item('item1', 'description1', 10, 1234567890)
     json_data = jsonify(a.to_dict())
     return json_data
