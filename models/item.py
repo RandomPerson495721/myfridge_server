@@ -1,7 +1,5 @@
 import uuid
 
-from flask_sqlalchemy import SQLAlchemy
-from flask import Flask
 from sqlalchemy import DateTime, Column, ForeignKey
 from sqlalchemy.orm import Mapped
 from sqlalchemy.sql.sqltypes import NULLTYPE, Integer, String
@@ -9,7 +7,6 @@ from sqlalchemy.sql.sqltypes import NULLTYPE, Integer, String
 from models.models import Base, db
 
 
-# A class to represent an item in the inventory.
 
 class Item(db.Model):
     __tablename__ = 'items'
@@ -21,10 +18,11 @@ class Item(db.Model):
     expiration_date = Column(DateTime, nullable=True)
     position = Column(Integer, nullable=False)
     user_id = Column(String(255), nullable=False)
-    reference_id = Column(Integer, nullable=False)
+    reference_id = Column(String(255), nullable=False)
+    image_url = Column(String(255), nullable=True)
 
 
-    def __init__(self, name, description, quantity, expiration_date, position, user_id):
+    def __init__(self, name, description, quantity, expiration_date, position, user_id, image_url):
         super().__init__()
         self.name: Mapped[str] = name
         self.description: Mapped[str] = description
@@ -33,6 +31,7 @@ class Item(db.Model):
         self.position: Mapped[int] = position
         self.reference_id: Mapped[str] = str(uuid.uuid4())
         self.user_id: Mapped[int] = user_id
+        self.image_url: Mapped[str] = image_url
 
 
     def to_dict(self):
@@ -42,13 +41,13 @@ class Item(db.Model):
             'quantity': self.quantity,
             'expiration_date': self.expiration_date.isoformat(),
             'position': self.position,
-            'unique_id': self.reference_id,
+            'reference_id': self.reference_id,
+            'image_url': self.image_url,
         }
 
     def from_dict(self, data):
-        for field in ['name', 'description', 'quantity', 'expiration_date']:
+        for field in ['name', 'description', 'quantity', 'expiration_date', 'position' 'reference_id']:
             if field in data:
                 setattr(self, field, data[field])
         return self
 
-# A class to represent a database connection.
