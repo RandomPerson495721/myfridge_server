@@ -42,7 +42,7 @@ def get_items():
     if error_response:
         return error_response
 
-    user_id = decoded_token['uid']
+    user_id: str = decoded_token['uid']
     items = Item.query.filter_by(user_id=user_id).all()
     return jsonify([item.to_dict() for item in items])
 
@@ -70,7 +70,8 @@ def add_item():
         quantity=data.get('quantity'),
         expiration_date=expiration,
         position=data.get('position'),
-       user_id=decoded_token['uid']
+        user_id=decoded_token['uid'],
+        image_url=data.get('image_url')
     )
     db.session.add(item)
     db.session.commit()
@@ -103,6 +104,7 @@ def update_item(reference_id):
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
     item.position = data.get('position', item.position)
+    item.image_url = data.get('image_url', item.image_url)
 
 
 
