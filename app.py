@@ -70,7 +70,7 @@ def add_item():
     db.session.add(item)
     db.session.commit()
 
-    return "Item Created", 201
+    return jsonify({"message": "Item Created", "reference_id": item.reference_id}), 201
 
 @app.route('/items/update/<string:reference_id>', methods=['PUT'])
 def update_item(reference_id):
