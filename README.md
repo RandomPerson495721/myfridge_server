@@ -16,9 +16,9 @@
 - Save the key file somewhere secure, I used ~/.config/myfridge/\<KEY\>.json
 - Set the environment variable 'FIREBASE_ADMIN_SDK_KEY_PATH' to the real path of the key (Pycharm allows this in the run configuration)
 
-## To run the program, use the following command:
+## To run the program, use the following command from within the main directory:
 ```bash
- python main.py
+ python app.py
 ```
 ### The program will listen on port 5000
 
