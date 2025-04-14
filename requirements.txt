@@ -20,6 +20,7 @@ google-cloud-storage==3.1.0
 google-crc32c==1.7.1
 google-resumable-media==2.7.2
 googleapis-common-protos==1.69.2
+greenlet==3.1.1
 grpcio==1.71.0
 grpcio-status==1.71.0
 httplib2==0.22.0
@@ -35,8 +36,10 @@ pyasn1_modules==0.4.2
 pycparser==2.22
 PyJWT==2.10.1
 pyparsing==3.2.3
+python-dateutil==2.9.0.post0
 requests==2.32.3
 rsa==4.9
+six==1.17.0
 SQLAlchemy==2.0.40
 typing_extensions==4.13.1
 uritemplate==4.1.1
