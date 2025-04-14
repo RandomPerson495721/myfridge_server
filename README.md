@@ -1,5 +1,4 @@
 # Run instructions
-# ==========================
 ## To run the program, first create a virtual environment and activate it:
 ```bash
  python -m venv .venv
