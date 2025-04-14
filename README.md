@@ -22,8 +22,8 @@
 ```
 ### The program will listen on port 5000
 
-## To point the app to the server, change the URL on line 22 of build.gradle.kts in the app module to http://10.0.2.2:5000 
-## (This is assuming it's running on the emulator)
+### To point the app to the server, change the URL on line 22 of build.gradle.kts in the app module to http://10.0.2.2:5000 
+### (This is assuming it's running on the emulator)
 
-## You'll also need to download the google-services.json file and replace the one currently in the app/src directory with the one from your project
+### You'll also need to download the google-services.json file and replace the one currently in the app/src directory with the one from your project
 
