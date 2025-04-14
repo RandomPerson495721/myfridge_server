@@ -39,7 +39,7 @@ class Item(db.Model):
             'name': self.name,
             'description': self.description,
             'quantity': self.quantity,
-            'expiration_date': self.expiration_date.isoformat(),
+            'expiration_date': self.expiration_date.isoformat() + 'Z' if self.expiration_date else None,
             'position': self.position,
             'reference_id': self.reference_id,
             'image_url': self.image_url,

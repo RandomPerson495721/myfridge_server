@@ -1,10 +1,14 @@
 import datetime
+import dateutil.parser
 import os
 
 from flask import Flask, jsonify, request
 import firebase_admin
 from firebase_admin import credentials, auth
 from datetime import datetime
+
+from pyasn1.type.useful import UTCTime
+
 from models.item import Item
 from models.models import db
 
@@ -44,6 +48,8 @@ def get_items():
 def add_item():
     data = request.get_json()
 
+    print(data)
+
     if not data:
         return jsonify({"message": "No input data provided"}), 400
 
@@ -53,7 +59,7 @@ def add_item():
 
     expiration: datetime = datetime(1970, 1, 1)
     try:
-        expiration = datetime.strptime(data.get('expiration_date'), '%Y-%m-%dT%H:%M:%S')
+        expiration = dateutil.parser.parse(data.get('expiration_date'))
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
 
@@ -70,7 +76,7 @@ def add_item():
     db.session.add(item)
     db.session.commit()
 
-    return jsonify({"message": "Item Created", "reference_id": item.reference_id}), 201
+    return jsonify({"message": "Item Created", "reference_id": item.reference_id}), 200
 
 @app.route('/items/update/<string:reference_id>', methods=['PUT'])
 def update_item(reference_id):
@@ -94,7 +100,7 @@ def update_item(reference_id):
     item.description = data.get('description', item.description)
     item.quantity = data.get('quantity', item.quantity)
     try:
-        item.expiration_date = datetime.strptime(data.get('expiration_date'), '%Y-%m-%dT%H:%M:%S')
+        item.expiration_date = dateutil.parser.parse(data.get('expiration_date', item.expiration_date))
     except ValueError:
         return jsonify({"message": "Invalid date format"}), 400
     item.position = data.get('position', item.position)
